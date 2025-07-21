@@ -1,0 +1,47 @@
+# Node.js
+node_modules/
+# Java
+attendance/target/
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+# VSCode/Cursor/IDEA等编辑器配置
+.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+# STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+# 日志和临时文件
+*.log
+*.tmp
+# Mac/Windows系统文件
+.DS_Store
+Thumbs.db
+# 前端打包产物
+attendance-frontend/dist/
+# 其他
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+# 环境变量
+.env
+.env.*
+*.local 

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>员工考勤系统</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    table { border-collapse: collapse; width: 60%; margin-bottom: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: center; }
+    th { background: #f5f5f5; }
+    input, button { padding: 6px 12px; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h2>员工列表</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>姓名</th>
+          <th>出勤天数</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="emp in employees" :key="emp.id">
+          <td>{{ emp.id }}</td>
+          <td>{{ emp.name }}</td>
+          <td>{{ emp.attendanceDays }}</td>
+          <td>
+            <button @click="signIn(emp.id)">签到</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>新增员工</h3>
+    <input v-model="newName" placeholder="输入姓名" />
+    <button @click="addEmployee">添加</button>
+  </div>
+
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          employees: [],
+          newName: ''
+        }
+      },
+      methods: {
+        fetchEmployees() {
+          fetch('/employees')
+            .then(res => res.json())
+            .then(data => { this.employees = data; });
+        },
+        addEmployee() {
+          if (!this.newName.trim()) {
+            alert('姓名不能为空');
+            return;
+          }
+          fetch('/employees/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: this.newName })
+          })
+          .then(res => {
+            if (!res.ok) return res.text().then(msg => { throw new Error(msg); });
+            return res.json();
+          })
+          .then(() => {
+            this.newName = '';
+            this.fetchEmployees();
+          })
+          .catch(err => alert('添加失败: ' + err.message));
+        },
+        signIn(id) {
+          fetch(`/employees/${id}/sign-in`, { method: 'POST' })
+            .then(res => {
+              if (!res.ok) return res.text().then(msg => { throw new Error(msg); });
+              return res.json();
+            })
+            .then(() => this.fetchEmployees())
+            .catch(err => alert('签到失败: ' + err.message));
+        }
+      },
+      mounted() {
+        this.fetchEmployees();
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
