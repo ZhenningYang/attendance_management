@@ -22,6 +22,11 @@
       <el-table-column prop="jobNumber" label="工号" width="120" />
       <el-table-column prop="name" label="姓名" />
       <el-table-column prop="validDays" label="有效打卡天数" width="120" />
+      <el-table-column label="操作" width="120">
+        <template #default="scope">
+          <el-button type="danger" size="small" @click="confirmDelete(scope.row.jobNumber)">删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <el-pagination
       :current-page="employeePage"
@@ -62,7 +67,8 @@ import {
   adminAddEmployee,
   adminGetAttendanceRecordsByDate,
   adminSetDate,
-  adminGetCurrentDate
+  adminGetCurrentDate,
+  deleteEmployee
 } from '../api';
 import dayjs from 'dayjs';
 
@@ -181,6 +187,22 @@ export default {
     },
     handleRecordPageChange(page) {
       this.recordPage = page;
+    },
+    confirmDelete(jobNumber) {
+      this.$confirm(`确定删除工号 ${jobNumber} 的员工吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).then(() => {
+        deleteEmployee(jobNumber).then(() => {
+          this.msg = '删除成功';
+          this.fetchEmployees();
+          this.fetchRecords();
+          setTimeout(() => (this.msg = ''), 2000);
+        }).catch(() => {
+          this.msg = '删除失败';
+        });
+      }).catch(() => {});
     }
   },
   watch: {

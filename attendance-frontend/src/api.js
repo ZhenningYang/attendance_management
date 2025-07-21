@@ -51,6 +51,10 @@ export function getEmployeeName(jobNumber) {
   return axios.get(`${BASE_URL}/admin/employee-name`, { params: { jobNumber } }).then(res => res.data);
 }
 
+export function deleteEmployee(jobNumber) {
+  return axios.delete(`${BASE_URL}/employees/${jobNumber}`).then(res => res.data);
+}
+
 // 分页获取员工列表
 export function getEmployeePage(page = 0, size = 10) {
   return axios.get(`${BASE_URL}/employees/page`, { params: { page, size } }).then(res => res.data);
